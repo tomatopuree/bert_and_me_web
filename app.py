@@ -55,14 +55,6 @@ model.load_weights("moddy.h5")
 
 
 
-
-
-
-
-
-
-
-
 app = Flask(__name__, static_url_path='', static_folder='', template_folder='')
 app.config['SECRET_KEY'] = 'secret!'
 socketio = SocketIO(app)

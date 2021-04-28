@@ -1,0 +1,15 @@
+Flask==1.0.2
+Flask-SocketIO==5.0.1
+h5py==2.10.0
+Keras==2.4.3
+Keras-Preprocessing==1.1.2
+numpy==1.19.4
+python-socketio==5.2.1
+tensorboard
+tensorboard-data-server
+tensorboard-plugin-wit
+tensorflow
+tensorflow-estimator
+tokenizers==0.10.2
+transformers==4.5.1
+gunicorn==20.1.0

@@ -1,0 +1,102 @@
+  <head>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+  <link rel="stylesheet" href="https://code.getmdl.io/1.1.2/material.indigo-red.min.css">
+  <script src="https://code.getmdl.io/1.1.2/material.min.js" type="text/javascript"></script>
+  <script src="https://code.jquery.com/jquery-2.2.4.min.js" type="text/javascript"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js" integrity="sha512-q/dWJ3kcmjBLU4Qc47E4A9kTB4m3wuTY7vkFJDTZKjTs8jhyGQnaUrxa0Ytd0ssMZhbNua9hE+E7Qv1j+DyZwA==" crossorigin="anonymous"></script>
+
+  </head>
+  <body class="demo-background">  
+    <div class="demo-layout mdl-layout mdl-layout--fixed-header mdl-js-layout">
+      <header class="demo-header mdl-layout__header mdl-layout__header--scroll">
+        <div class="mdl-layout__header-row">
+          <span class="mdl-layout-title">Transformer Demo by Ada Dogrucu</span>
+          <div class="mdl-layout-spacer"></div>
+        </div>
+      </header>
+      <main class="demo-main mdl-layout__content">
+        <div class="demo-container mdl-grid">
+          <div class="mdl-cell mdl-cell--2-col mdl-cell--hide-tablet mdl-cell--hide-phone"></div>
+          <div class="demo-content  content mdl-color-text--grey-800 mdl-cell mdl-cell--8-col">
+            <div>
+              <i class="material-icons" style="font-size: 7rem;">sentiment_very_satisfied</i>
+            </div>
+            <h3>Text Sentiment Analysis</h3>
+              <p>
+                This website is a simple form that pushes your space delimited text back to a server, where it runs through a custom transformer (BERT + feedforward) and results in a number that represents how positive or negative your blurb of text is.
+                <br><br>
+                The dataset used is for IMDB reviews, and the output variable is a continuous variable between 0 and 4, 0 corresponding to a negative sentiment, and 4 to a positive one.
+                <br><br>
+                Therefore the application can be more accurately described as a movie review sentiment analyzer, but with a huge language model like BERT put in the mix and the often mystical mechanisms of following a high dimensional gradient on a high dimensional space, it can, with a grain of salt, can be said to analyze the sentiment of any old blurb of text. (In English, and upto 50 words after tokenization!)
+              </p>
+              <form action="#">
+                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                  <input class="demo-textfield mdl-textfield__input" type="text" id="sample1" placeholder="This movie sucks big time."></input>
+                  <label class="mdl-textfield__label" for="sample1">Your Movie Review or Random Text</label>
+                </div>        
+              </form>
+              <div class="mdl-layout-spacer"></div>
+              <p></p>
+              <div style="text-align: left">
+                <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--primary mdl-js-ripple-effect" id="send_button">Send it!</button>
+              </div>
+              <br><br>
+              <p id="berts_answer"></p> 
+              <p id="berts_answer2" hidden=true>0 is bad, 4 is best. Model can regress to outside of this range.</p>
+
+           </div>
+        </div>
+      </main>
+      <div class="mdl-layout-spacer"></div>
+      <footer class="demo-footer mdl-mini-footer">
+        <div class="mdl-mini-footer--left-section">
+          <ul class="mdl-mini-footer--link-list">
+            <li>All rights basted in beer and slow cooked to perfection</li>
+          </ul>
+        </div>
+      </footer>
+    </div>
+
+<script type="text/javascript">
+  
+$(document).ready(function(){
+ 
+    var socket = io.connect('http://' + document.domain + ':' + location.port + '/test');
+    console.log(document.domain);
+    console.log(location.port);
+
+    // var socket = io.connect('http://' + '127.0.0.1:5000');
+
+    socket.on('text_to_client', function(msg) {
+
+      console.log(msg);
+
+      console.log(msg.data);
+
+      var el = document.getElementById('berts_answer');
+      var el2 = document.getElementById('berts_answer2');
+
+      el.style['font-size'] = '20px';
+      el2.style['font-size'] = '16px';
+
+
+      el2.hidden = false;
+      el.innerText = "Text sentiment value: " + msg.data;
+    });
+
+    var element = document.getElementById('send_button');
+
+    element.onclick = function(){
+      var element2 = document.getElementById('sample1');
+
+      socket.emit('text_to_server', {data: element2.value});
+      console.log(element2.value)
+    };
+
+});
+
+
+
+</script>
+  </body>
